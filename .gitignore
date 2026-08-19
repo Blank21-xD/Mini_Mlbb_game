@@ -1,0 +1,14 @@
+# Environments
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+
+# Django
+db.sqlite3
+
+# OS generated files
+.DS_Store
