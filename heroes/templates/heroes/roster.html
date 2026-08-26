@@ -3,17 +3,21 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=#, initial-scale=1.0">
-  <title>Document</title>
+  <title>Hero Arena Roster</title>
 </head>
 
 <body>
-  <h1>Roster</h1>
-  <h2> Select the heroes for your team </h2>
+  <h1>Arena Draft (Max Level Preview)</h1>
   <ul>
-    <li>Fanny</li>
-    <li>Chou</li>
-    <li>Ling</li>
+    {% for item in roster %}
+    <li>
+      <strong>{{ item.instance.name }}</strong> [{{ item.instance.role }}] -
+      Level {{ item.calculated_stats.level }} |
+      HP: {{ item.calculated_stats.hp }} |
+      Attack: {{ item.calculated_stats.attack }} |
+      Crit Rate: {{ item.calculated_stats.crit_rate_pct }}%
+    </li>
+    {% endfor %}
   </ul>
 </body>
 
