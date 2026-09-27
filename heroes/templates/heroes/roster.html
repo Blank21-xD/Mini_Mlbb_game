@@ -3,22 +3,63 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Hero Arena Roster</title>
+  <title>Live Arena Draft</title>
 </head>
 
 <body>
-  <h1>Arena Draft (Max Level Preview)</h1>
-  <ul>
-    {% for item in roster %}
-    <li>
-      <strong>{{ item.instance.name }}</strong> [{{ item.instance.role }}] -
-      Level {{ item.calculated_stats.level }} |
-      HP: {{ item.calculated_stats.hp }} |
-      Attack: {{ item.calculated_stats.attack }} |
-      Crit Rate: {{ item.calculated_stats.crit_rate_pct }}%
-    </li>
-    {% endfor %}
+  <h1>Live Arena Draft</h1>
+
+  <!-- 1. The Dropdown -->
+  <label for="role-select">Select a Role:</label>
+  <select id="role-select">
+    <option value="">-- Choose Role --</option>
+    <option value="assasin">Assasin</option>
+    <option value="fighter">Fighter</option>
+    <option value="marksman">Marksman</option>
+  </select>
+
+  <!-- 2. The Empty Container -->
+  <h2>Available Heroes:</h2>
+  <ul id="hero-list">
+    <li>Awaiting selection...</li>
   </ul>
+
+  <!-- 3. The JavaScript Engine -->
+  <script>
+    // Get the HTML elements so JS can control them
+    const dropdown = document.getElementById('role-select');
+    const heroList = document.getElementById('hero-list');
+
+    // Listen for the user changing the dropdown selection
+    dropdown.addEventListener('change', function () {
+      const role = dropdown.value;
+
+      // If they select the empty default option, reset the list
+      if (role === "") {
+        heroList.innerHTML = "<li>Awaiting selection...</li>";
+        return;
+      }
+
+      // Call your dynamic Django API!
+      fetch(`/api/roles/${role}/`)
+        .then(response => response.json()) // Unpack the JSON
+        .then(data => {
+          // Clear out the old list
+          heroList.innerHTML = "";
+
+          // Loop through the fresh API data and inject it into the HTML
+          data.forEach(hero => {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${hero.name}</strong> - HP: ${hero.stats.hp} | Attack: ${hero.stats.attack} | Crit: ${hero.stats.crit_rate_pct}%`;
+            heroList.appendChild(li);
+          });
+        })
+        .catch(error => {
+          console.error("API Error:", error);
+          heroList.innerHTML = "<li>Error loading heroes.</li>";
+        });
+    });
+  </script>
 </body>
 
 </html>
